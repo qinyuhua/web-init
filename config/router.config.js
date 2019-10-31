@@ -25,7 +25,7 @@ export default [
           },
           {
             path: '/welcome',
-            name: 'welcome1',
+            name: '初始页面',
             icon: 'smile',
             component: './Welcome',
           },
@@ -33,6 +33,7 @@ export default [
             component: './404',
           },
         ],
+
       },
       {
         component: './404',
