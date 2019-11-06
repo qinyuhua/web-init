@@ -28,6 +28,9 @@ package-lock.json
 functions/*
 .temp/**
 
+# umi
+.umi
+.umi-production
 
 # screenshot
 screenshot
