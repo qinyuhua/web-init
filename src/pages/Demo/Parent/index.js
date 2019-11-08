@@ -26,18 +26,29 @@ class Index extends Component {
     this.state = {
       msg: '父类消息',
       name: 'parent',
+      index: 1,
     };
   }
 
-  callBack = (msg, name) => {
-    this.setState({ msg, name });
+  callBack = (msg, name, index) => {
+    this.setState({ msg, name, index });
   };
 
   handleClick = e => {
-    // console.log(this);
     e.stopPropagation();
-    // this.refs.children2.handleChildren2Fn('父类消息2', 'parent2');
-    this.children2.handleChildren2Fn('父类消息2', 'parent2');
+    const { msg, name, index } = this.state;
+    this.children2.handleChildren2Fn(`${msg}${index}`, `${name}${index}`);
+    this.setState({ index: index + 1 });
+  };
+
+  handleChangeState = e => {
+    e.stopPropagation();
+    const { msg, name, index } = this.state;
+    this.setState({
+      msg: `${msg}${index + 1}`,
+      name: `${name}${index + 1}`,
+      index: index + 1,
+    });
   };
 
   render() {
@@ -50,6 +61,9 @@ class Index extends Component {
               {msg}：{name}
             </div>
             <Button onClick={this.handleClick}>父组件 点击调用子组件2 中的函数</Button>
+            <Button onClick={this.handleChangeState}>
+              点击修改父组件数据，可以相应更新子组件展示数据
+            </Button>
           </Col>
           <Col span={8}>
             <Children1 {...this.state} callBack={this.callBack} />
