@@ -22,6 +22,12 @@ class Children2 extends Component {
    *
    * static 中不允许用this
    *
+   * 由于getDerivedStateFromProps 会在setState()后被调用，
+   * 并且它的返回值会被用于更新数据， 这意味着会在测触发setState()
+   * nextProps 第一个位置上的参数，未必是“新的” props，在组建中调用setState() 时，
+   * getDerivedStateFromProps 会被调用，此时nextprops并不是最新的。
+   *
+   *
    * @param nextProps
    * @param preState
    * @returns {*}

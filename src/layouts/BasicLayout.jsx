@@ -12,6 +12,7 @@ import RightContent from '@/components/GlobalHeader/RightContent';
 // import { isAntDesignPro } from '@/utils/utils';
 import logo from '../assets/logo.svg';
 import './UserLayout.less';
+import TabController from '@/components/TabController';
 
 /**
  * use Authorized check all menu item
@@ -23,7 +24,7 @@ const menuDataRender = menuList =>
   });
 
 const BasicLayout = props => {
-  const { dispatch, children, settings } = props;
+  const { dispatch, children, settings, tabData } = props;
   /**
    * constructor
    */
@@ -51,6 +52,14 @@ const BasicLayout = props => {
     }
   };
 
+  const tabControllerAddTabs = () => {
+    console.log(1);
+  };
+
+  const onChangeTabsTabController = () => {
+    console.log(2);
+  };
+
   return (
     <ProLayout
       logo={logo}
@@ -76,6 +85,11 @@ const BasicLayout = props => {
       {...props}
       {...settings}
     >
+      <TabController
+        addTabs={tabControllerAddTabs}
+        callbackAfterChangeTabs={onChangeTabsTabController}
+        propsData={tabData}
+      />
       {children}
     </ProLayout>
   );
