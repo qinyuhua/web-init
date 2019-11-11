@@ -18,6 +18,9 @@ class Children2 extends Component {
    * 用于替换 componentWillReceiveProps ，用来控制props 更新 state的过程，他返回一个对象表示新的state.
    * 每次渲染之前都会调用，不管初始挂载还是后面的 更新，都会调用，
    * componentWillReceiveProps 只有父组件早场重新渲染才会调用
+   * 执行 setState 也会触发此函数
+   *
+   * static 中不允许用this
    *
    * @param nextProps
    * @param preState
