@@ -1,27 +1,22 @@
 import React, { Component } from 'react';
 import { Card } from 'antd';
+import Context from './ChildContext';
 
 class Children3 extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      name: 'children3-child',
-      msg: 'children3-child 消息',
-      pName: props.name,
-      pMsg: props.msg,
-    };
+    this.state = {};
   }
 
   render() {
-    const { name, msg, pMsg, pName } = this.state;
     return (
-      <Card title="子组件三的子组件, 孙组件">
-        <div>
-          {pMsg} : {pName}
-        </div>
-        <div>
-          {msg} : {name}
-        </div>
+      <Card title="子组件三的子组件-孙组件">
+        <Context.Consumer>
+          {context => {
+            const { key } = context;
+            return <span>父组件传递过来的消息：{key}</span>;
+          }}
+        </Context.Consumer>
       </Card>
     );
   }

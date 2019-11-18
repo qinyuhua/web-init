@@ -13,6 +13,7 @@ import RightContent from '@/components/GlobalHeader/RightContent';
 import logo from '../assets/logo.svg';
 import './UserLayout.less';
 import TabController from '@/components/TabController';
+import defaultSettings from '../../config/defaultSettings';
 
 /**
  * use Authorized check all menu item
@@ -53,11 +54,11 @@ const BasicLayout = props => {
   };
 
   const tabControllerAddTabs = () => {
-    console.log(1);
+    // console.log(1);
   };
 
   const onChangeTabsTabController = () => {
-    console.log(2);
+    // console.log(2);
   };
 
   return (
@@ -85,12 +86,14 @@ const BasicLayout = props => {
       {...props}
       {...settings}
     >
-      <TabController
-        addTabs={tabControllerAddTabs}
-        callbackAfterChangeTabs={onChangeTabsTabController}
-        propsData={tabData}
-      />
-      {children}
+      {defaultSettings.headTabsisShow && (
+        <TabController
+          addTabs={tabControllerAddTabs}
+          callbackAfterChangeTabs={onChangeTabsTabController}
+          propsData={tabData}
+        />
+      )}
+      {!defaultSettings.headTabsisShow && children}
     </ProLayout>
   );
 };

@@ -13,4 +13,5 @@ export default {
   title: '初始化项目',
   pwa: false,
   iconfontUrl: '',
+  headTabsisShow: false,
 };

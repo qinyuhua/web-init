@@ -72,65 +72,74 @@ class Index extends Component {
    */
   handleContextBack = e => {
     e.stopPropagation();
-    // const { msg, name, index } = this.state;
-    // this.setState({
-    //   msg: `${msg}${index + 1}`,
-    //   name: `${name}${index + 1}`,
-    //   index: index + 1,
-    // });
+    // const { child3C: { key: 'child3child' }, } = this.state;
+    const {
+      index,
+      child3C: { key },
+    } = this.state;
+    this.setState({
+      child3C: {
+        key: `${key}${index + 1}`,
+      },
+    });
   };
 
   render() {
     const { msg, name, child3C } = this.state;
     return (
-      <Tabs defaultActiveKey="1" tabPosition="top">
-        <TabPane tab="React父组件与子组件之间" key="1">
-          <Card title="React父组件与子组件之间的数据传递及函数调用">
+      <Card bordered={false}>
+        <Tabs defaultActiveKey="1" tabPosition="top">
+          <TabPane tab="React父组件与子组件之间" key="1">
+            <Card title="React父组件与子组件之间的数据传递及函数调用">
+              <Row gutter={24}>
+                <Col span={8}>
+                  <div>
+                    {msg}：{name}
+                  </div>
+                  <Tooltip placement="topLeft" title="父组件 点击调用子组件2 中的函数">
+                    <Button onClick={this.handleClick}>P调用C2函数</Button>
+                  </Tooltip>
+                  <Tooltip
+                    placement="topLeft"
+                    title="点击修改父组件数据，可以相应更新子组件展示数据"
+                  >
+                    <Button onClick={this.handleChangeState}>P函数修改数据，同步C2数据</Button>
+                  </Tooltip>
+                </Col>
+                <Col span={8}>
+                  <Children1 {...this.state} callBack={this.callBack} />
+                </Col>
+                <Col span={8}>
+                  <Children2
+                    {...this.state}
+                    ref={children => {
+                      this.children2 = children;
+                    }}
+                  />
+                </Col>
+              </Row>
+            </Card>
+          </TabPane>
+          <TabPane tab="Context上下文" key="2">
             <Row gutter={24}>
               <Col span={8}>
-                <div>
-                  {msg}：{name}
-                </div>
-                <Tooltip placement="topLeft" title="父组件 点击调用子组件2 中的函数">
-                  <Button onClick={this.handleClick}>P调用C2函数</Button>
-                </Tooltip>
-                <Tooltip placement="topLeft" title="点击修改父组件数据，可以相应更新子组件展示数据">
-                  <Button onClick={this.handleChangeState}>P函数修改数据，同步C2数据</Button>
-                </Tooltip>
+                <Card title="父组件Context上下文 Demo">
+                  <div>
+                    Context 通过组件树提供了一个传递数据的方法，从而避免了在每一个层级手动的传递
+                    props 属性。
+                  </div>
+                  <Button onClick={this.handleContextBack}>context按钮</Button>
+                </Card>
               </Col>
               <Col span={8}>
-                <Children1 {...this.state} callBack={this.callBack} />
-              </Col>
-              <Col span={8}>
-                <Children2
-                  {...this.state}
-                  ref={children => {
-                    this.children2 = children;
-                  }}
-                />
+                <Context.Provider value={child3C}>
+                  <Children3 />
+                </Context.Provider>
               </Col>
             </Row>
-          </Card>
-        </TabPane>
-        <TabPane tab="Context上下文" key="2">
-          <Row gutter={24}>
-            <Col span={8}>
-              <Card title="父组件Context上下文 Demo">
-                <div>
-                  Context 通过组件树提供了一个传递数据的方法，从而避免了在每一个层级手动的传递 props
-                  属性。
-                </div>
-                <Button onClick={this.handleContextBack}>context按钮</Button>
-              </Card>
-            </Col>
-            <Col span={8}>
-              <Context.Provider value={child3C}>
-                <Children3 />
-              </Context.Provider>
-            </Col>
-          </Row>
-        </TabPane>
-      </Tabs>
+          </TabPane>
+        </Tabs>
+      </Card>
     );
   }
 }

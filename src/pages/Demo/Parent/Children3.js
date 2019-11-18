@@ -1,23 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Card } from 'antd';
 import Children3Child from './Children3-child';
 
-class Children3 extends Component {
+class Children3 extends React.Component {
   constructor(props) {
     super(props);
-    // console.log(props);
-    this.state = {
-      name: 'children3',
-      msg: 'children3 消息',
-      pName: props.name,
-      pMsg: props.msg,
-    };
+    this.state = {};
   }
 
   render() {
-    const { name, msg, pMsg, pName } = this.state;
     return (
-      <Card title={`子组件三${name}${msg}${pMsg}${pName}`}>
+      <Card title="子组件三">
         <Children3Child />
       </Card>
     );
