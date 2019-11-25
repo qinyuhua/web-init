@@ -35,6 +35,11 @@ export default [
             name: '父组件-子组件传递',
             component: './Demo/Parent',
           },
+          {
+            path: '/demo/promiseDemo',
+            name: 'Promise 学习',
+            component: './Demo/PromiseDemo',
+          },
         ],
       },
       {

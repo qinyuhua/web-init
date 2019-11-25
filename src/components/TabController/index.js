@@ -4,15 +4,6 @@ import { Tabs } from 'antd';
 const { TabPane } = Tabs;
 
 class TabController extends Component {
-  /**
-   * props
-   * @param props
-   * 至少包含 导航栏、内容
-   */
-  // constructor(props) {
-  //   super(props);
-  // }
-
   render() {
     const { panes, propsData, dropdown, activeKey } = this.props;
 
