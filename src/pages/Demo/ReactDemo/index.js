@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Card, Tabs } from 'antd';
-import Demo1 from './Demo1';
-import Demo2 from './Demo2';
-import Demo3 from './Demo3';
+import Demo1Hook from './Demo1Hook';
 
 const { TabPane } = Tabs;
 
@@ -32,15 +30,15 @@ class Index extends Component {
   render() {
     return (
       <Card bordered={false}>
-        <Tabs defaultActiveKey="3" tabPosition="top">
-          <TabPane tab="手动实现Promise" key="1">
-            <Demo1 />
+        <Tabs defaultActiveKey="1" tabPosition="top">
+          <TabPane tab="Hook学习" key="1">
+            <Demo1Hook />
           </TabPane>
-          <TabPane tab="测试" key="2">
-            <Demo2 />
+          <TabPane tab="2" key="2">
+            2
           </TabPane>
-          <TabPane tab="this指向" key="3">
-            <Demo3 />
+          <TabPane tab="3" key="3">
+            3
           </TabPane>
         </Tabs>
       </Card>

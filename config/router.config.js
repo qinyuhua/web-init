@@ -40,6 +40,11 @@ export default [
             name: 'Promise 学习',
             component: './Demo/PromiseDemo',
           },
+          {
+            path: '/demo/reactDemo',
+            name: 'React 学习',
+            component: './Demo/ReactDemo',
+          },
         ],
       },
       {

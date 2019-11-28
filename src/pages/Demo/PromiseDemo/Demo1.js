@@ -11,7 +11,7 @@ class Demo1 extends Component {
     //   }, 1000);
     // });
     // p.then(x => {
-    //   // this.setState({x:})
+    //   console.log(x);
     // })
     //   .then(() => {
     //     console.log('链式调用1');
