@@ -1,3 +1,3 @@
 ### JavaScript 题解
 
-###1. ES6
+##一. ES6

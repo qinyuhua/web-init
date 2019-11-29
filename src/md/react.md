@@ -203,7 +203,7 @@ Hook 就是 javaScript 函数，但是使用它们会有两个额外的规则：
 1. 只能在函数最外层调用 Hook。不要再循环、条件判断或者子函数中调用。
 2. 只能在 React 的函数组件中调用 Hook。 不要在其他 JavaScript 函数中调用。
 
-## 3、Component 和 PureComponent 的区别
+## 3. Component 和 PureComponent 的区别
 
 > React.PureComponent 与 React.Component 几乎完全相同，但是 React.PureComponent 通过 props 和 state 的浅对比来实现 shouldComponentUpdate()， 某些情况下可以用 PureComponent 提升性能。
 
@@ -223,4 +223,51 @@ PureComponent不仅会影响本身，而且还会影响子组件，所以PureCom
 
 #### 可以用 PureComponent 提升性能
 
-## 4 React 中 keys 的作用是什么？
+## 4. 为什么虚拟 DOM 会提高性能？
+
+虚拟 dom 相当于在 js 和真实 dom 中间加了一个缓存，利用 dom diff 算法避免了没有必要的 dom 操作，从而提升性能。
+
+用 JavaScript 对象结构表示 DOM 树的结构; 然后用这个树构建一个真正的 DOM 树，插到文档当中当状态变更的时候，重新构造一颗新的对象树。然后用新的树和旧的树进行比较，记录两棵树差异，然后把新的更新到旧的去重建真正的 DOM 树，视图就更新了。
+
+## 5. 前端框架 Flux 架构简介
+
+> Flux 是 Facebook 用户建立客户端 Web 应用的前端框架，它通过利用一个**单向的数据流补充了 React 的组合视图组件**，这更是一种模式而非正式框架。
+
+### 5.1 Flux 思想
+
+> 最大特点，就是数据的“单向流动”
+
+1. 用户访问 View
+2. View 发出用户端 Action
+3. Dispatch 收到 Action，要求 Store 进行相应的更新。
+4. Store 更新后，发出一个“change”事件
+5. View 收到“change” 事件后，更新页面。
+
+### 5.2 Flux 组成
+
+Flux 应用有三个主要部分：Dispatcher 调度、存储 Store 和视图 View
+
+### 6. React 之 diff 算法
+
+Diff 算法的作用是用来计算出 Virtual DOM 中被改变的部分，然后针对该部分进行原生 DOM 操作，而不用重新渲染整个页面。
+
+只有在 React 更新阶段才会有 Diff 算法的运用。
+
+#### 6.1 什么是 Diff 算法
+
+- 传统 Diff. diff 算法即*差异查找算法*；对于 HTML DOM 结构即为 tree 的差异查找算法；二对于计算两棵树的差异时间复杂度为 O（n^3）, 显然成本太高， React 不可能采用传统算法。
+- React Diff。
+  1. React 采用虚拟 DOM 技术实现对真实 DOM 的映射，即 React Diff 算法的差异查找实质是对两个 JavaScript 对象的差异查找。
+  2. 基于三个策略：[Diff 算法的三大策略]
+
+#### 6.1.1 Tree Diff
+
+> Web UI 中 DOM 节点跨层级的移动操作特别少，可以忽略不计。
+
+#### 6.1.2 Component Diff
+
+> 拥有相同类的两个组件将会生成相似的树形结构，拥有不同类的两个组件将会生成不同的树形结构。
+
+#### 6.1.3 Element Diff
+
+> 对于同一层级的一组子节点，他们可以同构唯一 id 进行区分。
