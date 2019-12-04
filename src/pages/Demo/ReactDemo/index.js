@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Card, Tabs } from 'antd';
 import Demo1Hook from './Demo1Hook';
+import TypeScriptDemo2 from './TypeScriptDemo2';
 
 const { TabPane } = Tabs;
 
@@ -30,12 +31,12 @@ class Index extends Component {
   render() {
     return (
       <Card bordered={false}>
-        <Tabs defaultActiveKey="1" tabPosition="top">
+        <Tabs defaultActiveKey="2" tabPosition="top">
           <TabPane tab="Hook学习" key="1">
             <Demo1Hook />
           </TabPane>
           <TabPane tab="2" key="2">
-            2
+            <TypeScriptDemo2 />
           </TabPane>
           <TabPane tab="3" key="3">
             3

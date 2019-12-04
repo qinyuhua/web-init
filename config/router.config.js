@@ -45,6 +45,11 @@ export default [
             name: 'React 学习',
             component: './Demo/ReactDemo',
           },
+          {
+            path: '/demo/htmlCss',
+            name: 'HtmlCss学习',
+            component: './Demo/HtmlCss',
+          },
         ],
       },
       {
