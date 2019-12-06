@@ -186,7 +186,7 @@ function Example() {
 export default Example;
 ```
 
-**useEffect 做了什么？** 通过使用这个 Hook，你可以告诉 React 组件需要在渲染后执行某些操作。React 会保存你传递的函数，并且在执行 DOM 更新之后调用它。在这个 effect 中，我们设置了 document.title 属性，不过我们也可以执行数据获取或者调用其他命令式 API。
+**useEffect 做了什么？** 通过使用这个 Hook，你可以告诉 React 组件需要在渲染后执行某些操作。 React 会保存你传递的函数，并且在执行 DOM 更新之后调用它。在这个 effect 中，我们设置了 document.title 属性，不过我们也可以执行数据获取或者调用其他命令式 API。
 
 当你调用 useEffect 时，就是告诉 React 在完成对 DOM 的更改后运行你的函数。
 
@@ -202,6 +202,271 @@ Hook 就是 javaScript 函数，但是使用它们会有两个额外的规则：
 
 1. 只能在函数最外层调用 Hook。不要再循环、条件判断或者子函数中调用。
 2. 只能在 React 的函数组件中调用 Hook。 不要在其他 JavaScript 函数中调用。
+
+> Hook 可以在不编写 class 的情况下使用 state 以及其他 React 特性。
+
+### 2.6 class 和 Hook 转换
+
+这是一个 typescript + react + antd 转换 Hook
+
+#### 2.6.1 class
+
+1. 父组件
+
+```
+import React, { Component } from 'react';
+import { connect } from 'dva';
+import { Dispatch, AnyAction } from 'redux';
+import { StateType } from './models/repayment';
+import {ConnectState, GlobalModelState} from '@/models/connect';
+import AlipayComponent from '../../components/AlipayComponent'
+
+interface IndexProps {
+  dispatch: Dispatch<AnyAction>,
+  repayment: StateType,
+  global: GlobalModelState;
+}
+
+// @ts-ignore
+@connect(({ repayment, global }: ConnectState) => ({
+  repayment,
+  global,
+}))
+class Index extends Component<IndexProps> {
+  // 其他生命周期函数
+  render () {
+    return (
+      <>
+        <AlipayComponent
+          title='随借随还，按日计息'
+          titleValue='扫码登录'
+          url='https://www.baidu.com/'
+          scanValue='请用您的支付宝扫一扫'
+          openValue='请打开支付宝APP扫码登录，查看应还金额，完成还款'
+        />
+      </>
+    )
+  }
+}
+
+export default Index;
+
+```
+
+2. 子组件
+
+```
+import React, { Component } from 'react';
+import QRCode from 'qrcode.react';
+import alipayLogo from '../../assets/alipay-logo.png';
+import alipayPage from '../../assets/alipay-page.png';
+import styles from './index.css';
+
+interface AlipayState {
+  url?: string,
+  title? : string,
+  titleValue?: string,
+  scanValue?: string,
+  openValue?: string,
+}
+
+export interface AlipayProps {
+  url?: string;
+  title? : string,
+  titleValue?: string,
+  scanValue?: string,
+  openValue?: string,
+}
+
+
+/**
+ * <AlipayProps, AlipayState> 这个顺序不能颠倒，
+ * PropsType 是从父组件传过来的属性的类型
+ *
+ */
+export default class AlipayComponent extends Component<AlipayProps, AlipayState> {
+  constructor(props: AlipayProps) {
+    super(props);
+    console.log(props);
+    this.state = {
+      url: props.url,
+      title: props.title || undefined,
+      titleValue: props.titleValue || undefined,
+      scanValue: props.scanValue || undefined,
+      openValue: props.openValue || undefined,
+    }
+  }
+
+  render(): React.ReactNode {
+    // TS2459: Type 'Readonly<{}>' has no property 'openValue' and no string index signature
+    const {
+      url,
+      title,
+      titleValue,
+      scanValue,
+      openValue
+    } = this.state;
+    return (
+      <div className={styles.layout}>
+        <div className={styles.leftLayout}>
+          <div className={styles.title}>{title || '' }</div>
+
+          {titleValue && <div className={styles.titleValue}>{titleValue}</div>}
+          <span className={styles.qrCodeCss}>
+              <QRCode
+                value={url || ''}// 生成二维码的内容
+                size={160} // 二维码的大小
+                fgColor="#000000" // 二维码的颜色
+                imageSettings={{ // 中间有图片logo
+                  src: alipayLogo,
+                  height: 32,
+                  width: 32,
+                  excavate: true
+                }}
+              />
+            </span>
+          {scanValue && <div className={styles.scanCss}>{scanValue}</div>}
+          {openValue && <div className={styles.openCss}>{openValue}</div>}
+        </div>
+        <div className={styles.rightLayout}>
+          <img alt="page" src={alipayPage} width={282} height={457}/>
+        </div>
+      </div>
+    )
+  }
+}
+
+```
+
+#### 2.6.2 Hook
+
+1.父组件
+
+```
+import React, { Component } from 'react';
+import { connect } from 'dva';
+import { Dispatch, AnyAction } from 'redux';
+import { RepaymentStateType } from './models/repayment';
+import {ConnectState, GlobalModelState} from '@/models/connect';
+import AlipayComponent from '../../components/AlipayComponent'
+import NoRepay from '../../assets/noReapyment.png';
+import styles from './index.css';
+
+interface IndexProps {
+  dispatch: Dispatch<AnyAction>,
+  repayment: RepaymentStateType,
+  global: GlobalModelState;
+}
+
+interface IndexState {
+  isShow: Boolean
+}
+
+// @ts-ignore
+@connect(({ repayment, global }: ConnectState) => ({
+  repayment,
+  global,
+}))
+class Index extends Component<IndexProps, IndexState> {
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'repayment/fetchHasRepayment',
+    })
+  }
+
+  // 其他生命周期函数
+  render () {
+    const { repayment: { isHasRepayment }} = this.props;
+    console.log(isHasRepayment);
+    return (
+      <>
+        { isHasRepayment && (
+          <AlipayComponent
+            title='随借随还，按日计息'
+            titleValue='扫码登录'
+            url='https://www.baidu.com/'
+            scanValue='请用您的支付宝扫一扫'
+            openValue='请打开支付宝APP扫码登录，查看应还金额，完成还款'
+          />
+        )}
+        { !isHasRepayment && (
+          <div className={styles.layout}>
+            <span className={styles.title}>随借随还，按日计息</span>
+            <img src={NoRepay} width={180} height={171} />
+            <div className={styles.subTitle}>
+              <span>您没有待还账单，</span><span>去借款</span>
+            </div>
+          </div>
+        )}
+      </>
+    )
+  }
+}
+
+export default Index;
+
+
+```
+
+2. 子组件
+
+```
+
+```
+
+1、 Component 类的变化首选，变化的是 Component 类，通过泛型的方式约束组件的 state 和 props 类型
+
+```
+class Index extends Component<IndexProps, IndexState> {}
+```
+
+此处通过 `Component<IndexProps, IndexState>` 约束 `Index` 组件中的 props 和 State 属性， Index 中的 props 属性必须满足 IndexProps 接口， state 必须满足 IndexState 接口
+
+#### 2.6.3 connect 与 @connect
+
+`@connect 只能在class 中使用`
+
+connect 的作用是将组件和 models 结合在一起。将 models 中的 state 绑定到组件的 props 中。并提供一些额外的功能，譬如 dispatch。
+
+connect 方法返回的也是一个 React 组件，通常称为容器组件。因为它是原始 UI 组件的容器，及在外面包一层 State.
+
+connect 方法传入的第一个参数是 mapStateToProps 函数，该函数需要返回一个对象，用于建立 State 到 Props 的映射关系。
+
+> 简单言之，connect 接收一个函数，返回一个函数。
+
+- hook
+
+```
+// hook
+import { connect } from 'dva';
+...
+export default connect(({ repayment, global }: ConnectState) => ({
+  repayment,
+  global,
+}))(Index);
+
+```
+
+##### @connect
+
+是 connect 的语法糖。
+
+> @connect 必须放在 export default class 前面
+
+- class
+
+```
+// class
+@connect(({ repayment, global }: ConnectState) => ({
+  repayment,
+  global,
+}))
+class Index extends Component<IndexProps> {
+ ...
+}
+```
 
 ## 3. Component 和 PureComponent 的区别
 
