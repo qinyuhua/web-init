@@ -149,6 +149,10 @@ let u: undefined = undefined;
 let n: null = null;
 ```
 
+#### 1.10 泛型
+
+\*\*
+
 ### 2. 接口 interface
 
 > TypeScript 的核心原则之一：对值所具有的结构进行类型检查。接口的作用就是为这些类型命名和为你的代码或第三方代码定义契约。
