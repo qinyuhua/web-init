@@ -260,6 +260,43 @@ export default class AlipayComponent extends Component<AlipayProps, AlipayState>
 
 可以分成几部分解析
 
-### 1. 引入
+#### 3.1 引入
 
 `export default class AlipayComponent extends Component<AlipayProps, AlipayState> {`
+
+```
+export default connect(({ lend, global, loading }: ConnectState) => ({
+  lend,
+  global,
+  loading: !!loading.effects['lend/goNext'],
+}))(Lend);
+
+```
+
+#### 3.2 Form 和 connect 同时使用
+
+```
+import React, { PureComponent } from 'react'
+import { Form } from 'antd'
+import { FormComponentProps } from 'antd/lib/form/Form' //获取form表单的interface
+
+interface IProps { //定义所需的相应接口
+  onSave : any,
+  onEdit : any,
+  handlevisible : any
+}
+
+class FromModal extends PureComponent<IProps & FormComponentProps> {
+   constructor(props: IProps & FormComponentProps) {
+    super(props);
+  }
+
+   render () {
+    return (
+      <Form layout="vertical"></Form>
+    )
+  }
+}
+
+export default Form.create<IProps & FormComponentProps>()(FromModal)
+```
