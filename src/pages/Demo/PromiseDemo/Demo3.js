@@ -1,13 +1,36 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from 'antd';
 
 function Example() {
-  const [count, setCount] = useState(0);
+  // function resolveAfter2Seconds(x) {
+  //   return new Promise(resolve => {
+  //     setTimeout(() => {
+  //       resolve(x);
+  //     }, 2000);
+  //   });
+  // }
+  //
+  // const add1 = async function(x) {
+  //   const a = await resolveAfter2Seconds(20);
+  //   const b = await resolveAfter2Seconds(30);
+  //   return x + a + b;
+  // };
+  //
+  // add1(10).then(v => {
+  //   console.log(v);
+  // });
+  //
+  // (async function(x) {
+  //   const a1 = resolveAfter2Seconds(20);
+  //   const b1 = resolveAfter2Seconds(30);
+  //   return x + a1 + b1;
+  // })(10).then(v => {
+  //   console.log(v);
+  // });
 
   return (
     <div>
-      <span>{count}</span>
-      <Button onClick={() => setCount(count + 1)}>clickMe</Button>
+      <Button>clickMe</Button>
     </div>
   );
 }
