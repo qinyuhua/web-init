@@ -13,7 +13,7 @@ class Index extends Component {
   render() {
     return (
       <Card bordered={false}>
-        <Tabs defaultActiveKey="2" tabPosition="top">
+        <Tabs defaultActiveKey="1" tabPosition="top">
           <TabPane tab="Css" key="1">
             <Demo1 />
           </TabPane>

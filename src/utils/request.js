@@ -2,8 +2,16 @@
  * request 网络请求工具
  * 更详细的 api 文档: https://github.com/umijs/umi-request
  */
-import { extend } from 'umi-request';
-import { notification } from 'antd';
+import { isEmptyObject } from '@/utils/utils';
+
+/**
+ * 异常的回调
+ * @param error {object}
+ * @returns 跳转到相应的错误提示页或给出通知提醒框
+ */
+export function errorCallback(error) {
+  throw error;
+}
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -26,32 +34,74 @@ const codeMessage = {
  * 异常处理程序
  */
 
-const errorHandler = error => {
-  const { response } = error;
+// const errorHandler = error => {
+//   const { response } = error;
+//
+//   if (response && response.status) {
+//     const errorText = codeMessage[response.status] || response.statusText;
+//     const { status, url } = response;
+//     notification.error({
+//       message: `请求错误 ${status}: ${url}`,
+//       description: errorText,
+//     });
+//   } else if (!response) {
+//     notification.error({
+//       description: '您的网络发生异常，无法连接服务器',
+//       message: '网络异常',
+//     });
+//   }
+//
+//   return response;
+// };
 
-  if (response && response.status) {
-    const errorText = codeMessage[response.status] || response.statusText;
-    const { status, url } = response;
-    notification.error({
-      message: `请求错误 ${status}: ${url}`,
-      description: errorText,
-    });
-  } else if (!response) {
-    notification.error({
-      description: '您的网络发生异常，无法连接服务器',
-      message: '网络异常',
-    });
+export const checkStatus = response => {
+  const { status } = response;
+  if (status >= 200 && status < 300) {
+    // 调用成功
+    return response;
   }
-
-  return response;
+  const errortext = codeMessage[status] || response.statusText;
+  const error = new Error();
+  error.name = status;
+  error.response = response;
+  error.errortext = errortext;
+  throw error;
 };
-/**
- * 配置request请求时的默认参数
- */
 
-const request = extend({
-  errorHandler,
-  // 默认错误处理
-  credentials: 'include', // 默认请求是否带上cookie
-});
-export default request;
+/**
+ * 处理response
+ * @param response
+ * @param type
+ */
+function responseJson(response, type) {
+  if (response && isEmptyObject(response)) {
+    // 初始化
+    if (type && type === 'text') {
+      return response.text();
+    }
+    if (type && type === 'blob') {
+      return response.blob();
+    }
+    return response.json();
+  }
+  if (type && type === 'blob') {
+    return response.blob();
+  }
+  errorCallback(response);
+  return null;
+}
+
+/**
+ * fetch
+ */
+export const post = (url, params) => {
+  const headers = {};
+  const option = {
+    body: params,
+    method: 'POST',
+    headers,
+  };
+  return fetch(url, option)
+    .then(checkStatus) // 检查错误码
+    .then(response => responseJson(response));
+};

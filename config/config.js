@@ -28,20 +28,20 @@ const plugins = [
       },
       pwa: pwa
         ? {
-          workboxPluginMode: 'InjectManifest',
-          workboxOptions: {
-            importWorkboxFrom: 'local',
-          },
-        }
+            workboxPluginMode: 'InjectManifest',
+            workboxOptions: {
+              importWorkboxFrom: 'local',
+            },
+          }
         : false,
       ...(!TEST && os.platform() === 'darwin'
         ? {
-          dll: {
-            include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch'],
-            exclude: ['@babel/runtime', 'netlify-lambda'],
-          },
-          hardSource: false,
-        }
+            dll: {
+              include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch'],
+              exclude: ['@babel/runtime', 'netlify-lambda'],
+            },
+            hardSource: false,
+          }
         : {}),
     },
   ],
@@ -64,10 +64,7 @@ export default {
   hash: true,
   proxy: {
     '/loan': {
-      target: 'http://10.254.84.146:21102', // 测试环境
-      // target: 'http://10.254.201.89:21102', // 开发环境
-      // "target": "https://loan.xinyan-ai.com",// 生产环境
-      // "target": "http://10.253.51.118:21102",// 本地环境
+      target: 'http://127.0.0.1:3000', // 开发环境
       changeOrigin: true,
       pathRewrite: { '^/loan': '/loan' },
     },

@@ -1,30 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from 'antd';
+import React, { useEffect } from 'react';
 
-function FriendStatus() {
-  const [isOnline, setIsOnline] = useState(null);
+// const animals = [{ species: 'Lion', name: 'King' }, { species: 'Whale', name: 'Fail' }];
 
-  function handleStatusChange(status) {
-    setIsOnline(status.isOnline);
-  }
-
-  useEffect(() => {
-    // ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
-    // return () => {
-    //   ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
-    // };
-  });
-
-  // if (isOnline === null) {
-  //   return 'Loading....';
-  // }
-  // return isOnline ? 'Online' : 'Offline';
-  return (
-    <div>
-      <p>{isOnline}</p>
-      <Button onClick={() => handleStatusChange({ isOnline: 2 })}>clickMe</Button>
-    </div>
-  );
+// for (let i = 0; i < animals.length; i += 1) {
+//   (function(i) {
+//     this.print = function() {
+//       console.log(i, this.species, this.name);
+//     };
+//     this.print();
+//   }.call(animals[i], i));
+// }
+//
+function Demo1() {
+  useEffect(() => {});
+  return <div>测试</div>;
 }
 
-export default FriendStatus;
+export default Demo1;

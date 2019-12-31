@@ -53,6 +53,18 @@ export default [
         ],
       },
       {
+        path: '/center',
+        name: '配置中心',
+        icon: 'setting',
+        routes: [
+          {
+            path: 'center/account',
+            name: '账号管理',
+            component: './ManageCenter/AccountManager',
+          },
+        ],
+      },
+      {
         component: './404',
       },
     ],
