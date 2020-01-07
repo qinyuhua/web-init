@@ -1,6 +1,7 @@
 import { parse } from 'querystring';
-/* eslint no-useless-escape:0 import/prefer-default-export:0 */
+import { Base64 } from 'js-base64';
 
+/* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
 export const isUrl = path => reg.test(path);
 
@@ -60,4 +61,41 @@ export const deepClone = data => {
     });
   }
   return obj;
+};
+
+/**
+ *
+ * @param name cookie名称
+ * @param value cookie 对应的 value
+ * @param time 设置cookie的有效时长
+ */
+export const setCookie = (name, value, time) => {
+  const times = time || 30 * 30 * 48;
+  const d = new Date();
+  d.setTime(d.getTime() + times * 60 * 1000);
+  document.cookie = `${name}=${Base64.encode(value)};expires=${d.toGMTString()};path=/`;
+};
+
+/**
+ * 获取cookie
+ * @param name
+ */
+export const getCookie = name => {
+  const ca = document.cookie.split('; '); // ca格式例如["name=xiaoming", "age=25"]
+  let str;
+  for (let i = 0; i < ca.length; i += 1) {
+    if (name === 'token') {
+      if (ca[i].startsWith('token=')) {
+        const c = ca[i].split('token=');
+        str = Base64.decode(c[1]);
+        return str;
+      }
+    }
+    const c = ca[i].split('='); // c格式例如["name", "xiaoming"]
+    if (c[0] === name) {
+      str = Base64.decode(c[1]);
+      return str;
+    }
+  }
+  return str;
 };

@@ -1,16 +1,8 @@
 import React, { useEffect } from 'react';
+// import { setCookie } from '@/utils/utils'
 
-// const animals = [{ species: 'Lion', name: 'King' }, { species: 'Whale', name: 'Fail' }];
+// setCookie('token', '1');
 
-// for (let i = 0; i < animals.length; i += 1) {
-//   (function(i) {
-//     this.print = function() {
-//       console.log(i, this.species, this.name);
-//     };
-//     this.print();
-//   }.call(animals[i], i));
-// }
-//
 function Demo1() {
   useEffect(() => {});
   return <div>测试</div>;

@@ -178,9 +178,11 @@ JavaScript 只能与同一个域中的页面进行通讯。
 
 #### 3.2 跨域 主流跨域请求解决方案
 
-##### 3.2.1 JSONP 实现跨域
+##### 3.2.1 JSONP 实现跨域(jsonp 原理)
 
-JSONP 是一种依靠开发人员的聪明才智创造出的一种非官方跨域数据交互协议。
+JSON 是一个轻量级的数据交换格式。
+
+JSONP 是一个非官方的协议，他允许在服务器端集成 Script tags 返回至客户端，通过 JavaScript callback 的形式实现跨域访问。
 
 - JSONP 实现原理？
 
@@ -325,7 +327,7 @@ export default Demo1;
 
 ```
 
-#### 36.1. `call()` JS 中函数调用的其中一种
+#### 1. `call()` JS 中函数调用的其中一种
 
 call() 方法使用一个指定的 this 值和单独给出一个或多个参数来调用一个函数。
 
@@ -368,7 +370,7 @@ call() 允许为不同的对象分配和调用属于一个对象的函数/方法
 
 call() 提供新的 this 值给当前调用的函数/方法。你可以使用 call 来实现继承： 写一个方法，然后让另外一个新的对象来继承它。
 
-##### 1. 使用 call 方法调用父构造函数。
+##### 1.1. 使用 call 方法调用父构造函数。
 
 在一个子构造函数中，你可以通过调用父构造函数的 call 方法实现继承。
 
@@ -414,7 +416,7 @@ export default Demo1;
 
 ```
 
-##### 2. 使用 call 方法调用匿名函数。
+##### 1.2. 使用 call 方法调用匿名函数。
 
 在下例中的 for 循环体内，创建了一个匿名函数，然后通过调用该函数的 call 方法，将每个数组元素作为指定的 this 值执行了匿名函数。这个匿名函数的主要目的是给每个数组元素对象添加一个 print 方法，这个 print 方法可以打印信息。
 
@@ -452,15 +454,17 @@ export default Demo1;
 
 ```
 
-##### 3. 使用 call 方法调用函数，并指定上下文的 this
+##### 1.3. 使用 call 方法调用函数，并指定上下文的 this
 
-##### 4. 使用 call 方法调用函数并且不指定第一个参数。（this 的值默认被绑定为全局对象）
+##### 1.4. 使用 call 方法调用函数并且不指定第一个参数。（this 的值默认被绑定为全局对象）
 
-#### 36.2 apply() 调用一个具有给定 this 的函数，以及作为一个数组提供的参数(剩下用法和 call 类似)
+#### 2. apply() 调用一个具有给定 this 的函数，以及作为一个数组提供的参数(剩下用法和 call 类似)
 
 语法： `func.apply(thisArg, [argArray])`
 
-### 37 ajax
+### 37, ajax 和 axios、fetch 的区别
+
+#### 1. ajax
 
 - 使用步骤
 
@@ -500,19 +504,156 @@ oAjax.onreadystatechange = function() {
 };
 ```
 
-### 38, fetch
+**优缺点：**
 
-fetch 是一种 HTTP 数据请求方式，是 XMLHTTPRequest 的一种替代方案。fetch 不是 ajax 的进一步封装，而是原生 js。 Fetch 函数就是原生 js。
+- 本身是针对 MVC 的编程，不符合现在前端 MVVM 的浪潮
+- 基于原生的 XHR 开发，XHR 本身的架构不够清晰，已经有了 fetch 的替代方案
 
-Fetch API 提供了一个 JavaScript 接口，用于访问和操作 HTTP 管道的部分，例如请求和响应。
+#### 2， axios
 
-它还提供了一个全局 fetch() 方法，该方法提供了一种简单、合理的方式来跨网络一步获取资源。
+Axios 是一个基于 promise 的 HTTP 库，可以再浏览器和 Node.js 中使用。
 
-### 39 Vue-router 有哪几种模式，有什么区别
+特性
+
+- 从浏览器中创建 XMLHttpRequests
+- 从 Node.js 创建 http 请求
+- 支持 Promise API
+- 拦截请求和响应
+- 转换请求数据和相应数据
+- 取消请求
+- 自动转换 JSON 数据
+- 客户端支持防御 XSRF
+
+```javascript
+// 上面的请求也可以这样做
+axios
+  .get('/user', {
+    params: {
+      ID: 12345,
+    },
+  })
+  .then(function(response) {
+    console.log(response);
+  })
+  .catch(function(error) {
+    console.log(error);
+  });
+```
+
+```javascript
+axios
+  .post('/user', {
+    firstName: 'Fred',
+    lastName: 'Flintstone',
+  })
+  .then(function(response) {
+    console.log(response);
+  })
+  .catch(function(error) {
+    console.log(error);
+  });
+```
+
+多个 并发请求
+
+```javascript
+function getUserAccount() {
+  return axios.get('/user/12345');
+}
+
+function getUserPermissions() {
+  return axios.get('/user/12345/permissions');
+}
+
+axios.all([getUserAccount(), getUserPermissions()]).then(
+  axios.spread(function(acct, perms) {
+    // 两个请求现在都执行完成
+  }),
+);
+```
+
+**优缺点：**
+
+- 从 node.js 创建 http 请求
+- 支持 Promise API
+- 客户端支持防止 CSRF
+- 提供了一些并发请求的接口
+
+#### 3. fetch
+
+Fetch API 提供了一个 JavaScript 接口，用于访问和操纵 HTTP 管道的部分，例如请求和响应。
+
+它提供了一个全局的`fetch()`方法，该方法提供了一种简单，合理的方式来跨网络以不获取资源。 fetch 是一种 HTTP 数据请求方式，是 XMLHTTPRequest 的一种替代方案。 fetch 不是 ajax 的进一步封装，而是原生 js。 Fetch 函数就是原生 js。
+
+```javascript
+fetch(url, option)
+  .then(checkStatus) // 检查错误码
+  .then(response => responseJson(response));
+```
+
+- 当接收到一个代表错误的 HTTP 状态码时，从`fetch()`返回的 Promise 不会被标记为 reject，即使该 HTTP 相应的状态码是 404 或者 500。相反，它会将 Promise 状态标记为 resolve,仅当网络故障时或请求被阻止时，才会标记为 reject。
+
+```
+// 因此可以多加一个判断，判断状态码
+export const checkStatus = response => {
+  const { status } = response;
+  if (status >= 200 && status < 300) {
+    // 调用成功
+    return response;
+  }
+  const errortext = codeMessage[status] || response.statusText;
+  const error = new Error();
+  error.name = status;
+  error.response = response;
+  error.errortext = errortext;
+  throw error;
+};
+```
+
+- 默认情况加， fetch 不会从服务端发送或接受任何 cookie，如果站点依赖于用户 session，则会导致未经认证的请求。
+
+```javascript
+/**
+ * 处理response
+ * @param response
+ * @param type
+ */
+function responseJson(response, type) {
+  if (response && isEmptyObject(response)) {
+    // 初始化
+    if (type && type === 'text') {
+      return response.text();
+    }
+    if (type && type === 'blob') {
+      return response.blob();
+    }
+    return response.json();
+  }
+  if (type && type === 'blob') {
+    return response.blob();
+  }
+  errorCallback(response);
+  return null;
+}
+```
+
+**response** 这里的 response 只是一个 HTTP 响应，而不是真的 JSON。为了获取 JSON 的内容我们需要使用对应的 .json() 、.text() 、 .blob()方法。
+
+**优缺点：**
+
+- 符合关注分离，没有将输入、输出和用事件来跟踪的状态混在一个对象里。
+- 更加底层，提供了 API 丰富（request、response）
+- 脱离了 XHR，是 ES 规范里新的实现方式
+- 1. fetch 只对网络请求报错，对 400/500 都当成功的请求，需要封装去处理
+- 2. fetch 默认不会带 cookie，需要添加配置项
+- 3. fetch 不支持 abort，不支持超时控制，使用 setTimeout 及 Promise.reject 的实现的超时控制并不能阻止请求过程继续在后台运行，造成了量的浪费
+- 4. fetch 没有办法原生检测请求的进度，而 XHR 可以
+
+### 38 Vue-router 有哪几种模式，有什么区别
 
 hash 模式和 history 模式，默认的是 hash 模式
 
-#### 39.1 hash 模式
+#### 1 hash 模式
 
 hash 模式背后的原理是 onhashchange 事件，可以在 window 对象上监听这个事件：
 
@@ -526,7 +667,9 @@ window.onhashchange = function(event) {
 
 hash 发生变化的 url 都会被浏览器记录下来，从而会发现浏览器的前进后退都可以用。
 
-#### 39.2 history 路由
+#### 2 history 路由
+
+这种模式充分利用 `history.pushState` API 来完成 URL 跳转而无需加载页面。
 
 ```
 const router = new VueRouter({
@@ -534,3 +677,83 @@ const router = new VueRouter({
   routes: [...]
 })
 ```
+
+### 39 浏览器的渲染机制
+
+1. 浏览器获取 html 文件对其解析形成 dom 树。
+2. 与此同时，进行 css 解析，生成 style rules。
+3. 接着 DOM Tree 和 Style rules 合成 render tree.
+4. 进入布局 layout 阶段，为每一个节点分配一个应出现在屏幕上的坐标。
+5. 随后调用 GPU 进行绘制，遍历 render tree 的节点，将元素展现出来。
+
+### 40 理解浅拷贝和深拷贝
+
+- 浅拷贝， 是指创建一个对象，这个对象有着原始对象属性值的一份精确拷贝，如果属性是基本类型，那么拷贝的就是基本类型的值。如果属性是应用类型，那么拷贝的是内存地址，如果其中一个对象修改了某些属性，另外一个对象也会改变。
+- 深拷贝，是指从一个内存中完整的拷贝一个对象出来，并且在堆内存中为其分配一个新的内存区域来存放。并且修改该对象属性值，不会影响到原来的对象。
+
+浅拷贝的方式： 对象扩展运算符(...、 ==) 、 数组的 slice 方法、数组的 concat
+
+深拷贝的方式： 通过 JSON.Stringify 和 JSON.parse 方式来转换，还有用原生 JS 手动递归来实现。
+
+```javascript
+// 元素类型判断
+const getType = obj => {
+  // tostring会返回对应不同的标签的构造函数
+  const { toString } = Object.prototype;
+  const map = {
+    '[object Boolean]': 'boolean',
+    '[object Number]': 'number',
+    '[object String]': 'string',
+    '[object Function]': 'function',
+    '[object Array]': 'array',
+    '[object Date]': 'date',
+    '[object RegExp]': 'regExp',
+    '[object Undefined]': 'undefined',
+    '[object Null]': 'null',
+    '[object Object]': 'object',
+  };
+  if (obj instanceof Element) {
+    return 'element';
+  }
+  return map[toString.call(obj)];
+};
+
+// 深拷贝方法
+export const deepClone = data => {
+  const type = getType(data);
+  let obj;
+  if (type === 'array') {
+    obj = [];
+  } else if (type === 'object') {
+    obj = {};
+  } else {
+    // 不再具有下一层次
+    return data;
+  }
+  if (type === 'array') {
+    for (let i = 0, len = data.length; i < len; i += 1) {
+      obj.push(deepClone(data[i]));
+    }
+  } else if (type === 'object') {
+    Object.keys(data).map(d => {
+      obj[d] = deepClone(data[d]);
+      return d;
+    });
+  }
+  return obj;
+};
+```
+
+### 相同域名不同端口号的两个项目，cookie 相同名字会被覆盖
+
+之前学习过同源策略，提及到：同一协议、同一域名、统一端口号，当其中一个不满足时，请求会发生跨域问题。
+
+但是在实际项目中，遇到过本地启动两个项目遇到过 “协议相同，域名相同，端口号不同，但是在往 cookie 存放相同的一个字段 token 时，会发现 前一个存放的 token，会被后一个 token 覆盖掉” 这个问题。
+
+### webSocket 服务器主动向 浏览器发送数据
+
+WebSocket 是 THML5 开始提供的一种在单个 TCP 连接上进行全双工通讯的协议。
+
+WebScoket 使得客户端和服务器之间的数据交换变得更加简单，允许服务端主动向客户端推送数据。在 webScoket API 中，浏览器和服务器只需要完成一次握手，两者之间就直接可以创建持久性的连接，并进行双向数据传输。
+
+在 webSocket API 中，浏览器和服务器只需要做一次握手的动作，然后，浏览器和服务器之间就形成了一条快速通道。
