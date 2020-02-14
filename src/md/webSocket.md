@@ -1,4 +1,14 @@
-## webSocket
+WebSocket 是一种先进的技术。他可以在用户的浏览器和服务器之间打开交互式通信会话。使用此 API，您可以向服务器发送消息，并接收事件驱动的相应，而无需通过轮询服务器的方式以获得响应。
+
+**接口**
+
+`WebSocket` 用于连接 WebSocket 服务器的主要接口，之后可以在这个连接上发送和接收数据。
+
+`CloseEvent` 连接关闭时 WebSocket 对象发送的事件。
+
+`MessageEvent` 当从服务器获取到消息的时候 WebSocket 对象解除的事件。
+
+WebSocket 对象提供了用于创建和管理 WebSocket 连接，以及可以通过该链接发送和接收数据的 API。
 
 通常在实例化一个 websocket 对象之后，客户端就会与服务器进行连接。但是连接的状态是不确定的，于是用 readyState 属性来进行标识。它有四个值，分别对应不同的状态：
 
@@ -9,11 +19,15 @@
 
 本意： 通常有一些监控页面，然后实时去查询数据，如果使用轮询简直是一个特别笨的方法了，为了实现后端推送数据时，前端主动获取后端数据的功能，特此实验 webSocket Demo。这里只实现了简单的接收和发送数据。
 
-## 1. websockt
+下面整理了几种方式，实现 webSocket 连接，但是其实都是 webSocket 的基础上。
 
-![](https://user-gold-cdn.xitu.io/2020/1/6/16f7a3bba5d4f2d6?w=901&h=476&f=png&s=34681) ![](https://user-gold-cdn.xitu.io/2020/1/6/16f7a3c0ed4fa45c?w=446&h=158&f=png&s=8799)
+## 1. websockt（比较详细，后面的比较简单）
 
-- 客户端
+![](https://user-gold-cdn.xitu.io/2020/1/6/16f7a3bba5d4f2d6?w=901&h=476&f=png&s=34681)
+
+### 1. 客户端
+
+WebSocket 客户端应用程序使用 WebSocket API 通过 WebSocket 协议与 WebSocket 服务器通信。
 
 ```javascript
 import React, { Component } from 'react';
@@ -93,10 +107,96 @@ class Index extends Component {
 export default Index;
 ```
 
-- 服务端
+![](https://user-gold-cdn.xitu.io/2020/1/6/16f7a3c0ed4fa45c?w=446&h=158&f=png&s=8799)
+
+#### 1.1. 首先创建 WebSocket 对象
+
+为了使用 WebSocket 协议通信，你需要创建一个 `WebSocket` 对象，这将会自动地尝试建立与服务器的连接。
+
+WebSocket 构造函数接受一个必传参数和一个可选参数
+
+```
+new WebSocket(url: string, protocols: string|array<string>)
+```
+
+`url` 要连接的 URL，这应当是 WebSocket 服务器会响应的 URL。
+
+`protocols` 一个协议字符串或者一个协议字符串数组。这些字符串用来指定子协议，这样一个服务器就可以实现多个 WebSocket 协议。默认情况认为空字符串。
+
+```javascript
+this.ws = new WebSocket('ws://10.1.70.160:3131');
+```
+
+返回后，`this.ws.readyState` 参数为 `CONNECTING`，一旦连接可以传送数据，`readyState` 就会变成`OPEN`.
+
+在连接 websocket，需要使用`ws` 替代`http`, `wss`替代`https`。
+
+然后分别监听`onopen、onClose、onmessage` 来监听连接的状态用来执行相应的操作。
+
+#### 1.2. 向服务器发送数据
+
+一旦连接打开完成，就可以向服务器发送数据了。对每一个要发送的消息使用`WebSocket`对象的`send()`方法：
+
+```javascript
+this.ws.send('连接服务器成功');
+```
+
+也可以吧数据作为字符串、`Bolb`、或者`ArrayBuffer`来发送
+
+因为连接的建立是异步的，而且容易失败，所以不能保证刚创建 WebSocket 对象时使用`send()`方法成功。 我们在可以确定连接已经建立之后立马发送数据，可以通过注册`onopen`事件处理器解决：
+
+```javascript
+this.ws.onopen = () => {
+  console.log('连接服务器成功');
+  this.ws.send('连接服务器成功');
+};
+```
+
+也可以发送 JSON 对象到服务器。
+
+```javascript
+// 服务器向所有用户发送文本
+function sendText() {
+  // 构造一个 msg 对象， 包含了服务器处理所需的数据
+  var msg = {
+    type: 'message',
+    text: document.getElementById('text').value,
+    id: clientID,
+    date: Date.now(),
+  };
+
+  // 把 msg 对象作为JSON格式字符串发送
+  this.ws.send(JSON.stringify(msg));
+
+  // 清空文本输入元素，为接收下一条消息做好准备。
+  document.getElementById('text').value = '';
+}
+```
+
+### 1.3. 接收服务器发送的消息
+
+WebSockets 是一个基于事件的 API，收到消息的时候，一个`message` 消息会被发送到 `onmessage` 函数。为了开始监听传入的数据，可以进行如下操作：
+
+```javascript
+this.ws.onmessage = function(evt) {
+  const received_msg = evt.data;
+  console.log('客户端接受信息', received_msg);
+};
+```
+
+#### 1.4. 关闭服务
+
+当你不再需要 WebSocket 连接时，可以调用 WebSocket 的`close()`方法关闭连接前最好检查一下 socket 的 bufferedAmount 属性，以防还有数据要传输。
+
+### 2. 服务端
+
+WebSocket 服务器是一个 TCP 应用程序，监听服务器上任何遵循特定协议的端口。
+
+WebSocket 服务器可以用很多语言编写，如 C/C++、PHP、Python、服务器端 JavaScript(Node.js)等。我们演示的是 Node.js 实现
 
 ```javascript
 const http = require('http');
+
 const express = require('express');
 const webSocketServer = require('websocket').server;
 const webSocketsServerPort = 3131;
